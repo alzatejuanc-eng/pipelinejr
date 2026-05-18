@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline Comercial — JR Rodas 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<style>
+:root {
+  --navy: #1A3C6E;
+  --navy-dark: #102649;
+  --navy-light: #2356A0;
+  --red: #C41E3A;
+  --red-light: #e8405a;
+  --p1-col: #2563EB; --p1-bg: #EFF6FF; --p1-border: #BFDBFE;
+  --p2-col: #D97706; --p2-bg: #FFFBEB; --p2-border: #FDE68A;
+  --p3-col: #EA580C; --p3-bg: #FFF7ED; --p3-border: #FED7AA;
+  --p4-col: #16A34A; --p4-bg: #F0FDF4; --p4-border: #BBF7D0;
+  --gray-50: #F8FAFC; --gray-100: #F1F5F9; --gray-200: #E2E8F0;
+  --gray-400: #94A3B8; --gray-600: #475569; --gray-800: #1E293B;
+  --white: #FFFFFF;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+  --radius: 8px; --radius-lg: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--gray-50); color: var(--gray-800); font-size: 14px; min-height: 100vh; }
+
+/* ── HEADER ── */
+.topbar { background: var(--navy); color: white; padding: 0 20px; display: flex; align-items: center; gap: 16px; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
+.logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.logo-box { width: 34px; height: 34px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.logo-box span { color: var(--navy); font-weight: 700; font-size: 13px; letter-spacing: -.5px; }
+.logo-title { font-size: 15px; font-weight: 600; }
+.logo-sub { font-size: 11px; opacity: .7; }
+.topbar-center { flex: 1; }
+.topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.advisor-selector { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; max-width: 220px; }
+.advisor-selector option { background: var(--navy-dark); color: white; }
+.btn { padding: 7px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid transparent; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: all .15s; }
+.btn-white { background: white; color: var(--navy); border-color: white; }
+.btn-white:hover { background: #f0f4f8; }
+.btn-outline-white { background: transparent; color: white; border-color: rgba(255,255,255,.4); }
+.btn-outline-white:hover { background: rgba(255,255,255,.1); }
+.btn-primary { background: var(--navy); color: white; }
+.btn-primary:hover { background: var(--navy-dark); }
+.btn-success { background: #16A34A; color: white; }
+.btn-success:hover { background: #15803D; }
+.btn-danger { background: #DC2626; color: white; }
+.btn-danger:hover { background: #B91C1C; }
+.btn-ghost { background: transparent; color: var(--gray-600); border-color: var(--gray-200); }
+.btn-ghost:hover { background: var(--gray-100); }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+
+/* ── STATS BAR ── */
+.stats-bar { background: white; border-bottom: 1px solid var(--gray-200); padding: 10px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.stat-pill { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; border: 1.5px solid transparent; cursor: pointer; transition: all .15s; }
+.stat-pill.p1 { background: var(--p1-bg); border-color: var(--p1-border); }
+.stat-pill.p2 { background: var(--p2-bg); border-color: var(--p2-border); }
+.stat-pill.p3 { background: var(--p3-bg); border-color: var(--p3-border); }
+.stat-pill.p4 { background: var(--p4-bg); border-color: var(--p4-border); }
+.stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.p1 .stat-dot { background: var(--p1-col); }
+.p2 .stat-dot { background: var(--p2-col); }
+.p3 .stat-dot { background: var(--p3-col); }
+.p4 .stat-dot { background: var(--p4-col); }
+.stat-label { font-size: 11px; font-weight: 500; }
+.p1 .stat-label { color: var(--p1-col); }
+.p2 .stat-label { color: var(--p2-col); }
+.p3 .stat-label { color: var(--p3-col); }
+.p4 .stat-label { color: var(--p4-col); }
+.stat-count { font-size: 13px; font-weight: 700; color: var(--gray-800); }
+.stat-val { font-size: 11px; color: var(--gray-600); }
+.stats-sep { width: 1px; height: 32px; background: var(--gray-200); }
+.stat-total { margin-left: auto; display: flex; gap: 20px; }
+.stat-total-item { text-align: right; }
+.stat-total-item .stl { font-size: 11px; color: var(--gray-400); }
+.stat-total-item .stv { font-size: 16px; font-weight: 700; color: var(--gray-800); }
+.stat-total-item .stv.warn { color: var(--red); }
+
+/* ── BOARD ── */
+.board-wrap { padding: 16px 20px; display: flex; gap: 12px; align-items: flex-start; min-height: calc(100vh - 130px); overflow-x: auto; }
+.col { flex: 1; min-width: 240px; max-width: 320px; background: white; border-radius: var(--radius-lg); border: 1px solid var(--gray-200); display: flex; flex-direction: column; box-shadow: var(--shadow-sm); }
+.col-head { padding: 12px 14px 10px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 8px; }
+.col-phase-bar { width: 4px; height: 28px; border-radius: 2px; flex-shrink: 0; }
+.col.p1 .col-phase-bar { background: var(--p1-col); }
+.col.p2 .col-phase-bar { background: var(--p2-col); }
+.col.p3 .col-phase-bar { background: var(--p3-col); }
+.col.p4 .col-phase-bar { background: var(--p4-col); }
+.col-title { font-size: 13px; font-weight: 600; color: var(--gray-800); flex: 1; }
+.col-sub { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+.col-badge { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+.col.p1 .col-badge { background: var(--p1-bg); color: var(--p1-col); }
+.col.p2 .col-badge { background: var(--p2-bg); color: var(--p2-col); }
+.col.p3 .col-badge { background: var(--p3-bg); color: var(--p3-col); }
+.col.p4 .col-badge { background: var(--p4-bg); color: var(--p4-col); }
+.col-body { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 100px; }
+.col-footer { padding: 8px 10px; border-top: 1px solid var(--gray-100); }
+
+/* ── CARDS ── */
+.card { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; transition: box-shadow .15s, border-color .15s; position: relative; }
+.card:hover { box-shadow: var(--shadow-md); border-color: #CBD5E1; }
+.card.selected { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(26,60,110,.15); }
+.card.alert { border-left: 3px solid var(--red); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 4px; }
+.card-name { font-size: 12px; font-weight: 600; color: var(--gray-800); line-height: 1.3; flex: 1; }
+.card-code { font-size: 10px; color: var(--gray-400); background: var(--gray-100); padding: 1px 5px; border-radius: 4px; flex-shrink: 0; }
+.card-product { font-size: 11px; color: var(--gray-600); margin-bottom: 6px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-meta { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.card-budget { font-size: 11px; color: var(--gray-400); }
+.card-value { font-size: 13px; font-weight: 700; color: var(--navy); }
+.card-days { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500; }
+.card-days.ok { background: #F0FDF4; color: #16A34A; }
+.card-days.warn { background: #FFF7ED; color: #EA580C; }
+.card-days.danger { background: #FEF2F2; color: #DC2626; }
+.card-action { font-size: 11px; color: var(--gray-500); margin-top: 5px; padding-top: 5px; border-top: 1px solid var(--gray-100); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-action::before { content: "→ "; color: var(--gray-400); }
+.card-date-alert { font-size: 10px; color: var(--red); font-weight: 500; margin-top: 3px; }
+.card-nav { display: flex; gap: 4px; margin-top: 8px; }
+.card-nav .btn { padding: 3px 8px; font-size: 11px; flex: 1; justify-content: center; }
+.empty-col { text-align: center; color: var(--gray-400); font-size: 12px; padding: 20px 8px; }
+.empty-col svg { display: block; margin: 0 auto 6px; opacity: .4; }
+.btn-add-col { width: 100%; background: transparent; border: 1px dashed var(--gray-300); color: var(--gray-500); border-radius: 6px; padding: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.btn-add-col:hover { background: var(--gray-50); border-color: var(--navy); color: var(--navy); }
+
+/* ── DETAIL PANEL ── */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 200; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.overlay.show { opacity: 1; pointer-events: all; }
+.detail-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 400px; max-width: 95vw; background: white; box-shadow: var(--shadow-lg); z-index: 201; transform: translateX(100%); transition: transform .25s ease; display: flex; flex-direction: column; overflow: hidden; }
+.detail-panel.show { transform: translateX(0); }
+.dp-head { background: var(--navy); color: white; padding: 14px 18px; display: flex; align-items: flex-start; gap: 10px; flex-shrink: 0; }
+.dp-head-info { flex: 1; min-width: 0; }
+.dp-head-name { font-size: 15px; font-weight: 600; line-height: 1.3; }
+.dp-head-code { font-size: 11px; opacity: .7; margin-top: 2px; }
+.dp-head-advisor { font-size: 12px; opacity: .8; margin-top: 4px; }
+.dp-close { background: transparent; border: none; color: white; font-size: 20px; cursor: pointer; line-height: 1; opacity: .8; padding: 2px; flex-shrink: 0; }
+.dp-close:hover { opacity: 1; }
+.dp-phase-strip { display: flex; flex-shrink: 0; }
+.dp-phase-step { flex: 1; padding: 8px 4px; text-align: center; font-size: 10px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all .15s; color: var(--gray-400); background: var(--gray-50); border-top: 1px solid var(--gray-200); }
+.dp-phase-step:hover { color: var(--gray-600); background: white; }
+.dp-phase-step.active-p1 { color: var(--p1-col); border-bottom-color: var(--p1-col); background: var(--p1-bg); }
+.dp-phase-step.active-p2 { color: var(--p2-col); border-bottom-color: var(--p2-col); background: var(--p2-bg); }
+.dp-phase-step.active-p3 { color: var(--p3-col); border-bottom-color: var(--p3-col); background: var(--p3-bg); }
+.dp-phase-step.active-p4 { color: var(--p4-col); border-bottom-color: var(--p4-col); background: var(--p4-bg); }
+.dp-body { flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+.dp-section { }
+.dp-section-title { font-size: 10px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+.dp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dp-field { display: flex; flex-direction: column; gap: 4px; }
+.dp-field.full { grid-column: 1 / -1; }
+.dp-field label { font-size: 11px; font-weight: 500; color: var(--gray-600); }
+.dp-field input, .dp-field select, .dp-field textarea { width: 100%; padding: 7px 10px; border: 1px solid var(--gray-200); border-radius: 6px; font-size: 13px; color: var(--gray-800); background: white; transition: border-color .15s; font-family: inherit; }
+.dp-field input:focus, .dp-field select:focus, .dp-field textarea:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 2px rgba(26,60,110,.1); }
+.dp-field textarea { resize: vertical; min-height: 64px; }
+.dp-field .budget-ref { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.dp-history { }
+.history-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+.history-item { font-size: 11px; padding: 6px 10px; background: var(--gray-50); border-radius: 6px; border-left: 3px solid var(--gray-200); }
+.history-item.ph-p1 { border-left-color: var(--p1-col); }
+.history-item.ph-p2 { border-left-color: var(--p2-col); }
+.history-item.ph-p3 { border-left-color: var(--p3-col); }
+.history-item.ph-p4 { border-left-color: var(--p4-col); }
+.history-item .hi-date { color: var(--gray-400); font-size: 10px; }
+.dp-footer { padding: 12px 18px; border-top: 1px solid var(--gray-200); display: flex; gap: 8px; flex-shrink: 0; background: white; }
+.dp-footer .btn { flex: 1; justify-content: center; }
+
+/* ── ADD MODAL ── */
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal-bg.hidden { display: none; }
+.modal { background: white; border-radius: var(--radius-lg); padding: 24px; width: 440px; max-width: 100%; box-shadow: var(--shadow-lg); }
+.modal h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.modal .modal-sub { font-size: 12px; color: var(--gray-400); margin-bottom: 18px; }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-field { display: flex; flex-direction: column; gap: 4px; }
+.modal-field.full { grid-column: 1 / -1; }
+.modal-field label { font-size: 12px; font-weight: 500; color: var(--gray-600); }
+.modal-field input, .modal-field select { width: 100%; padding: 8px 10px; border: 1px solid var(--gray-200); border-radius: 6px; font-size: 13px; font-family: inherit; }
+.modal-field input:focus, .modal-field select:focus { outline: none; border-color: var(--navy); }
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.phase-hint { font-size: 11px; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; }
+.phase-hint.p1 { background: var(--p1-bg); color: #1E40AF; border: 1px solid var(--p1-border); }
+.phase-hint.p2 { background: var(--p2-bg); color: #92400E; border: 1px solid var(--p2-border); }
+.phase-hint.p3 { background: var(--p3-bg); color: #7C2D12; border: 1px solid var(--p3-border); }
+.phase-hint.p4 { background: var(--p4-bg); color: #14532D; border: 1px solid var(--p4-border); }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 20px; right: 20px; background: var(--gray-800); color: white; padding: 10px 16px; border-radius: 8px; font-size: 13px; z-index: 999; transform: translateY(80px); opacity: 0; transition: all .3s; pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: #16A34A; }
+.toast.error { background: #DC2626; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+
+@media (max-width: 768px) {
+  .board-wrap { padding: 10px; }
+  .detail-panel { width: 100%; }
+  .stat-total { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-box"><span>JR</span></div>
+    <div>
+      <div class="logo-title">Pipeline Comercial</div>
+      <div class="logo-sub">Importadora José Rodas · 2026</div>
+    </div>
+  </div>
+  <div class="topbar-center"></div>
+  <div class="topbar-right">
+    <select class="advisor-selector" id="advisorSel" onchange="onAdvisorChange()">
+      <option value="">👁 Vista Gerencial (todos)</option>
+    </select>
+    <button class="btn btn-white btn-sm" onclick="exportExcel()" title="Exportar a Excel">
+      ⬇ Exportar Excel
+    </button>
+    <button class="btn btn-outline-white btn-sm" onclick="exportJSON()" title="Respaldo JSON">💾</button>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar" id="statsBar"></div>
+
+<!-- BOARD -->
+<div class="board-wrap" id="boardWrap"></div>
+
+<!-- OVERLAY + DETAIL PANEL -->
+<div class="overlay" id="overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detailPanel">
+  <div class="dp-head" id="dpHead">
+    <div class="dp-head-info">
+      <div class="dp-head-name" id="dpName">—</div>
+      <div class="dp-head-code" id="dpCode">—</div>
+      <div class="dp-head-advisor" id="dpAdvisor">—</div>
+    </div>
+    <button class="dp-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="dp-phase-strip" id="dpPhaseStrip"></div>
+  <div class="dp-body">
+    <div class="dp-section">
+      <div class="dp-section-title">Oportunidad</div>
+      <div class="dp-grid">
+        <div class="dp-field">
+          <label>Valor estimado ($)</label>
+          <input type="number" id="dpValue" placeholder="0.00" min="0" step="1">
+          <span class="budget-ref" id="dpBudgetRef"></span>
+        </div>
+        <div class="dp-field">
+          <label>Probabilidad cierre</label>
+          <select id="dpProb">
+            <option value="20">20% — Prospección</option>
+            <option value="50">50% — Propuesta</option>
+            <option value="75">75% — Negociación</option>
+            <option value="95">95% — Cierre</option>
+          </select>
+        </div>
+        <div class="dp-field full">
+          <label>Producto / Descripción</label>
+          <input type="text" id="dpProduct" placeholder="Ej: Filtros Toyota x50, Frenos Kia...">
+        </div>
+      </div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-section-title">Seguimiento</div>
+      <div class="dp-grid">
+        <div class="dp-field full">
+          <label>Próxima acción</label>
+          <input type="text" id="dpAction" placeholder="¿Qué hay que hacer?">
+        </div>
+        <div class="dp-field">
+          <label>Fecha próximo contacto</label>
+          <input type="date" id="dpDate">
+        </div>
+        <div class="dp-field">
+          <label>Tipo de contacto</label>
+          <select id="dpContactType">
+            <option value="">—</option>
+            <option>Visita presencial</option>
+            <option>Llamada telefónica</option>
+            <option>WhatsApp</option>
+            <option>Correo electrónico</option>
+            <option>Videoconferencia</option>
+          </select>
+        </div>
+        <div class="dp-field full">
+          <label>Notas</label>
+          <textarea id="dpNotes" placeholder="Observaciones, condiciones especiales, acuerdos..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="dp-section dp-history">
+      <div class="dp-section-title">Historial de movimientos</div>
+      <div class="history-list" id="dpHistory"></div>
+    </div>
+  </div>
+  <div class="dp-footer">
+    <button class="btn btn-ghost btn-sm" onclick="closeDetail()">Cancelar</button>
+    <button class="btn btn-danger btn-sm" onclick="resetCard()">Restablecer</button>
+    <button class="btn btn-primary" onclick="saveDetail()">✓ Guardar cambios</button>
+  </div>
+</div>
+
+<!-- ADD CLIENT MODAL (for non-listed clients) -->
+<div class="modal-bg hidden" id="addModal">
+  <div class="modal">
+    <h3>Agregar cliente a pipeline</h3>
+    <p class="modal-sub">Solo los clientes asignados al asesor aparecen en el tablero. Para agregar un cliente extra:</p>
+    <div class="phase-hint p1" id="addModalHint">Fase: Prospección — Primer contacto realizado</div>
+    <div class="modal-grid">
+      <div class="modal-field full">
+        <label>Nombre del cliente *</label>
+        <input type="text" id="addName" placeholder="Nombre del cliente o empresa">
+      </div>
+      <div class="modal-field">
+        <label>Código cliente</label>
+        <input type="text" id="addCode" placeholder="EXTRA01">
+      </div>
+      <div class="modal-field">
+        <label>Valor estimado ($) *</label>
+        <input type="number" id="addValue" placeholder="0">
+      </div>
+      <div class="modal-field full">
+        <label>Producto / Descripción</label>
+        <input type="text" id="addProduct" placeholder="¿Qué productos?">
+      </div>
+      <div class="modal-field full">
+        <label>Próxima acción</label>
+        <input type="text" id="addAction" placeholder="¿Qué hay que hacer?">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeAddModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNewCard()">Agregar al pipeline</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   DATA — 200 clientes reales del archivo Mayo 2026
+   [advisor_id, advisor_name, code, name, budget]
+   ========================================================= */
+const RAW = [
+["3","Moncayo Castro Carlos","A210","AMAGUA YELA OSCAR FABIAN",1300],
+["3","Moncayo Castro Carlos","A150","BYRON ROLANDO YUNGA GODOY",4800],
+["3","Moncayo Castro Carlos","C322","COMERCIAL JARAMILLO REPUESTOS",1290],
+["3","Moncayo Castro Carlos","C251","COMTRANUTOME S.A",3200],
+["3","Moncayo Castro Carlos","M011","COOP. TRANSPORTE CIUDAD DE MACHALA",1800],
+["3","Moncayo Castro Carlos","C292","COOP. TRANSPORTE UNION CARIAMANGA",5000],
+["3","Moncayo Castro Carlos","C258","COOPERATIVA DE TRANSPORTES LOJA",7200],
+["3","Moncayo Castro Carlos","C020","COOP. INTERNACIONAL FRONTERIZA CIFA",1800],
+["3","Moncayo Castro Carlos","C313","CUENCANA SERVICIO Y REPUESTOS CUSERE SA",1300],
+["3","Moncayo Castro Carlos","C309","DARWIN OSCAR CUENCA PALTAN",1000],
+["3","Moncayo Castro Carlos","A231","DIANA PILAR ALVARADO ACOSTA",0],
+["3","Moncayo Castro Carlos","D045","DIESEL REPUESTOS JM CIA LTDA",500],
+["3","Moncayo Castro Carlos","I100","EDWIN R. AGUILERA BARRAZUETA",3100],
+["3","Moncayo Castro Carlos","E010","ESPINOSA LUDEÑA DAVID RICARDO",500],
+["3","Moncayo Castro Carlos","A229","FRANKLIN STALIN ALVARADO ALVARADO",500],
+["3","Moncayo Castro Carlos","G135","GARCIA MORALES ROMAN EDUARDO",800],
+["3","Moncayo Castro Carlos","P121","GLAS MOTORS",5000],
+["3","Moncayo Castro Carlos","G158","GRUPMAS SA",3000],
+["3","Moncayo Castro Carlos","G011","GUAMAN MONTAÑO CELINA MARISOL",800],
+["3","Moncayo Castro Carlos","I101","IMPORTADORA AGUILERA & COMPAÑIA",1500],
+["3","Moncayo Castro Carlos","J002","JACOME COBOS RENE TIMOLEON",500],
+["3","Moncayo Castro Carlos","M002","JIMMY PAUL MONTAÑO GONZALEZ",500],
+["3","Moncayo Castro Carlos","F063","JOSE ALEJANDRO FEIJOO SANCHEZ",2500],
+["3","Moncayo Castro Carlos","P168","JOSE MANUEL PEÑALOZA AGUILAR",500],
+["3","Moncayo Castro Carlos","L066","LANCOMTRI S.A.",1300],
+["3","Moncayo Castro Carlos","J021","LAURO NORMANDO JIMENEZ JARAMILLO",500],
+["3","Moncayo Castro Carlos","F065","LUIS ALFONSO FEIJOO FREIRE",1000],
+["3","Moncayo Castro Carlos","L084","MARIA AUGUSTA LOZA SARMIENTO",1000],
+["3","Moncayo Castro Carlos","L021","MARIA AUXILIADORA LEON CALI",500],
+["3","Moncayo Castro Carlos","R005","MARIA ELENA ROMERO RAMIREZ",1200],
+["3","Moncayo Castro Carlos","B103","MARITZA BELDUMA LLIVIGAÑAY",500],
+["3","Moncayo Castro Carlos","M210","MASAPARTS",5000],
+["3","Moncayo Castro Carlos","P017","PAREDES TORRES EDWIN EDUARDO",2500],
+["3","Moncayo Castro Carlos","P154","PERALTA PARRA CARMEN ISABEL",5800],
+["3","Moncayo Castro Carlos","P012","POMA BLACIO RODRIGO DARLEY",10000],
+["3","Moncayo Castro Carlos","R140","RICAURTESA S.A.",800],
+["3","Moncayo Castro Carlos","R002","RODRIGUEZ LEON FANNY HERMINIA",500],
+["3","Moncayo Castro Carlos","R150","ROMERO LANCHI JHONNY ENRIQUE",1500],
+["3","Moncayo Castro Carlos","S229","SALAZAR QUIZHPE MANUEL EDISON",500],
+["3","Moncayo Castro Carlos","U021","TALLERES UNCOVIASERVIS SA",5000],
+["3","Moncayo Castro Carlos","T077","TORO ZAMBRANO XIMENA PATRICIA",1000],
+["3","Moncayo Castro Carlos","E001","ULPIANO ISRAEL ERAZO VEGA",700],
+["3","Moncayo Castro Carlos","U018","URBADIEZ S.A.",800],
+["3","Moncayo Castro Carlos","Z046","ZHENG CANBIAO",500],
+["19952","César Méndez Rugel","S231","ARELIS VANESSA SUAREZ RENDON",1400],
+["19952","César Méndez Rugel","I122","ARIAS SANCHEZ EDISON EFRAIN",1000],
+["19952","César Méndez Rugel","G094","ARNOLDO VIDAL TORRES",2500],
+["19952","César Méndez Rugel","A214","ASOC SERV COMERCIALIZACION ASERECATAR",3000],
+["19952","César Méndez Rugel","A023","ATML AUTOMIL REPUESTOS SAS",800],
+["19952","César Méndez Rugel","A213","AUTOCONTINENTAL SA",500],
+["19952","César Méndez Rugel","C202","CACERES DIESEL CIA.LTDA.",500],
+["19952","César Méndez Rugel","C284","CACERES LINDAO PATRICIO ALBERTO",1000],
+["19952","César Méndez Rugel","C280","CASA CASA SEGUNDO DAVID",1300],
+["19952","César Méndez Rugel","C088","CASTILLO MENA LUIS RAMIRO",500],
+["19952","César Méndez Rugel","CH24","CHICA RAMIREZ JAIRO GABRIEL",500],
+["19952","César Méndez Rugel","T008","COMPAÑIA TRANSPORTE URBANO TRANSMETRO S.A.",2500],
+["19952","César Méndez Rugel","C325","COOP. TRANSP. INTERPROVINCIAL SAN CRISTOBAL",3100],
+["19952","César Méndez Rugel","T004","CRISTINA BELEN TAIPE TENORIO",4500],
+["19952","César Méndez Rugel","V197","DIEGO FERNANDO VILLAGOMEZ CHOLOTA",3000],
+["19952","César Méndez Rugel","C296","DISASUR",1000],
+["19952","César Méndez Rugel","C246","EDWIN REMIGIO CUEVA CAJAS",10000],
+["19952","César Méndez Rugel","E047","EURODIMPORT S.C.C",13000],
+["19952","César Méndez Rugel","F042","FATIMA MARGOT FAJARDO RISUEÑO",500],
+["19952","César Méndez Rugel","G169","GONZALO AUGUSTO GALLARDO VALAREZO",3000],
+["19952","César Méndez Rugel","H046","HIDALGO SALGUERO DAVID IVAN",500],
+["19952","César Méndez Rugel","I005","IMPORTADORA-GORDON S.A.S. B.I.C.",500],
+["19952","César Méndez Rugel","M225","JORGE DUMANY MARTINEZ CORDOVA",1300],
+["19952","César Méndez Rugel","C253","JOSE FRANCISCO CLAVIJO MENA",500],
+["19952","César Méndez Rugel","CH001","JOSE LUIS CHUNGATA ZUMBA",1100],
+["19952","César Méndez Rugel","M203","MOSCOSO BARRIGA ANGELICA MARIA",1400],
+["19952","César Méndez Rugel","N041","NUÑEZ JEREZ EDISSON JAVIER",2500],
+["19952","César Méndez Rugel","Q002","QUISINTUÑA GUAMAN FREDY GILBERTO",500],
+["19952","César Méndez Rugel","R156","REQUIMO DIESEL",3000],
+["19952","César Méndez Rugel","S027","SECOHI CIA.LTDA. (QUITO)",590],
+["19952","César Méndez Rugel","P010","SOCIEDAD ANONIMA Y CIVIL PRADI",1000],
+["19952","César Méndez Rugel","T039","Transcoiv Cía. Ltda.",1000],
+["19952","César Méndez Rugel","T099","TRANSPORTES PLANETA TRANSPLANETA S A",3000],
+["19952","César Méndez Rugel","V191","VARGAS LOPEZ GEOVANNY EMILIO",2000],
+["19952","César Méndez Rugel","Y003","YAGUANA FEIJOO MARIA DE LOS ANGELES",2000],
+["19929","Christian Sanchez Ruiz","C274","AGROAZUCAR ECUADOR SA",3000],
+["19929","Christian Sanchez Ruiz","T105","AUTOMOTRIZ TECNOCAR S A",1000],
+["19929","Christian Sanchez Ruiz","A002","AUTOPARTES JRCP S.A.S.",5500],
+["19929","Christian Sanchez Ruiz","S061","COMERCIALIZADORA SER-WAY S.A.",10500],
+["19929","Christian Sanchez Ruiz","C010","COMPANIA AZUCARERA VALDEZ S.A.",1200],
+["19929","Christian Sanchez Ruiz","C002","CONSORCIO DURAN LIMPIO",1500],
+["19929","Christian Sanchez Ruiz","C260","CONSORCIO METRO EXPRESS",7000],
+["19929","Christian Sanchez Ruiz","C223","CONSORCIO METROBASTION",7000],
+["19929","Christian Sanchez Ruiz","C193","CONSORCIO METROQUIL",8000],
+["19929","Christian Sanchez Ruiz","C324","CONSORCIO URVASEO",6000],
+["19929","Christian Sanchez Ruiz","E063","EIMEPARTS S.A.S.",5000],
+["19929","Christian Sanchez Ruiz","G149","GALAGANS S.A",800],
+["19929","Christian Sanchez Ruiz","L080","LINCE LOGISTICA LITRANSA",800],
+["19929","Christian Sanchez Ruiz","L003","LOOR PEREZ WALTER ANDRES",500],
+["19929","Christian Sanchez Ruiz","M204","MAMUT ANDINO C.A.",5000],
+["19929","Christian Sanchez Ruiz","N045","NARVAEZ SERRANO MARCO VINICIO",2000],
+["19929","Christian Sanchez Ruiz","P005","PRACTIPOWER S.A.",3000],
+["19929","Christian Sanchez Ruiz","R009","REPCONTRANSPORT S.A.",0],
+["19929","Christian Sanchez Ruiz","S014","SOC. AGRICOLA E INDUSTRIAL SAN CARLOS SA",3000],
+["19929","Christian Sanchez Ruiz","C006","SONIA AZUCENA CONTRERAS CASTRO",690],
+["19929","Christian Sanchez Ruiz","T091","TRANSPOINT S.A.",500],
+["19929","Christian Sanchez Ruiz","T100","TRANSTEINER S.A.",500],
+["19929","Christian Sanchez Ruiz","V005","VISTIN NARANJO MANUEL VICTORIANO",0],
+["19938","Elizabeth Soriano","C007","BRUNO ALEXANDER CORREA ABRIL",0],
+["19938","Elizabeth Soriano","C326","CABMA SAS",12100],
+["19938","Elizabeth Soriano","CH02","CARMEN ROSARIO CHICAIZA ALLAN",0],
+["19938","Elizabeth Soriano","C297","CENTRO AUTOMOTRIZ EL AMIGO SERVARTU SA",600],
+["19938","Elizabeth Soriano","E003","COOP. TRANSPORTE PASAJEROS EBENEZER",0],
+["19938","Elizabeth Soriano","C009","COOPERATIVA DE TRANSPORTE FLECHA VERDE",1000],
+["19938","Elizabeth Soriano","C317","COOP. TRANSP. URBANO LAS ORQUIDEAS",1000],
+["19938","Elizabeth Soriano","C273","COOP. TRANSPORTES SEÑOR DE LOS MILAGROS",0],
+["19938","Elizabeth Soriano","M223","CRISTINA NARCISA MUÑOZ CASTRO",13000],
+["19938","Elizabeth Soriano","T113","DAISY ELIZABETH TUMBACO TUMBACO",590],
+["19938","Elizabeth Soriano","F003","DIEGO ISRAEL FRANCO SULCA",0],
+["19938","Elizabeth Soriano","C005","DIEGO MICHAEL CORREA ABRIL",1000],
+["19938","Elizabeth Soriano","C241","DORILA ELVIRA CANGO CANGO",1600],
+["19938","Elizabeth Soriano","E042","ELECTROMECANICA EL PAVO HOMERO GARCES",600],
+["19938","Elizabeth Soriano","E002","ESTRADA LEON MARGARITA ISABEL",1000],
+["19938","Elizabeth Soriano","A228","EUDORO FABIAN ARTEAGA VARELES",2100],
+["19938","Elizabeth Soriano","F004","FIGUEROA FIGUEROA MERCY ESTHER",1000],
+["19938","Elizabeth Soriano","CH27","JORGE SABINO CHOEZ CEVALLOS",500],
+["19938","Elizabeth Soriano","A218","JOSE GONZALO ARGOS GUAMAN",0],
+["19938","Elizabeth Soriano","U001","JUAN JOSE UYAGUARI MARTINEZ",2800],
+["19938","Elizabeth Soriano","L081","JULIO CESAR LEMA PARCO",1390],
+["19938","Elizabeth Soriano","U020","LAURA ELIZABETH UYAGUARI MARTINEZ",0],
+["19938","Elizabeth Soriano","U019","LAURA E. UYAGUARI MARTINEZ (2)",0],
+["19938","Elizabeth Soriano","L070","LOPEZ CORDOVA EDGAR GUSTAVO",0],
+["19938","Elizabeth Soriano","M008","MORANTE MARTINEZ LUIS PABLO",2000],
+["19938","Elizabeth Soriano","T104","NANCY PRISCILA TARCO QUITO",3000],
+["19938","Elizabeth Soriano","P006","PAEZ BURGOS JACKSON ONIAS",1000],
+["19938","Elizabeth Soriano","M066","PATRICIO MERCHAN MERCHAN",1000],
+["19938","Elizabeth Soriano","P149","PEÑAFIEL SANCHEZ EDDY RICARDO",0],
+["19938","Elizabeth Soriano","A003","SANDRA MAGDALENA ABRIL ERAS",0],
+["19938","Elizabeth Soriano","S001","STOCKTIRE S.A.",0],
+["19938","Elizabeth Soriano","V133","VICENTA ALEXANDRA VILLAVICENCIO CARRION",600],
+["19918","Engelbert Baque","S228","ANA LUCIA SOLIS VELASTEGUI",3000],
+["19918","Engelbert Baque","C167","ANGEL COCA VILLEGAS",1600],
+["19918","Engelbert Baque","J015","CARLOS ALBERTO JACKE ROSERO",12000],
+["19918","Engelbert Baque","C310","COOP. TRANSPORTE MARISCAL SUCRE",800],
+["19918","Engelbert Baque","G165","GUERRERO REYES YARITZA ELENA",6500],
+["19918","Engelbert Baque","V122","HUGO MARCELO VILLARROEL BASTIDAS",600],
+["19918","Engelbert Baque","N015","HUGO VLADIMIRO NARANJO GORDON",10000],
+["19918","Engelbert Baque","I145","IMPORTADORA RODRIGUEZ GALLEGOS RODGALPARTS",0],
+["19918","Engelbert Baque","A187","ISIDRO ALLAICA CARANQUI",0],
+["19918","Engelbert Baque","T001","JANNETH SUSANA TADAY GUASHPA",3300],
+["19918","Engelbert Baque","S244","LUIS ANIBAL SALAZAR LLONTOP",500],
+["19918","Engelbert Baque","D049","LUIS ARMANDO DIAZ VILLA",1000],
+["19918","Engelbert Baque","V127","MIRIAM JACQUELINE VILLALBA TENEDA",1000],
+["19918","Engelbert Baque","F052","NORMA FREIRE ESCOBAR",1600],
+["19918","Engelbert Baque","P148","PALMA FRANCO MIRIAN PAULINA",500],
+["19918","Engelbert Baque","T010","PERALTA TOMALA LISTER JOHN",500],
+["19918","Engelbert Baque","Q001","QUITO RODRIGUEZ GLADIS MARLENE",1000],
+["19918","Engelbert Baque","N003","REPUESTOS NAGOYA RNG S.A.S.",600],
+["19918","Engelbert Baque","R006","ROBINSON PROAÑO ZAIRA MAGALY",600],
+["19918","Engelbert Baque","P001","SEGUNDO ISIDRO PONCE COSTALES",2500],
+["19918","Engelbert Baque","S223","SHAGÑAY ÑAUPA FERNANDO",500],
+["19918","Engelbert Baque","S226","SUAREZ VILLALTA NELSON ROSENDO",0],
+["19918","Engelbert Baque","S004","SUAREZ VILLALTA SIXTO ERNESTO",500],
+["19918","Engelbert Baque","C101","TARQUINO COBA COBA",500],
+["19918","Engelbert Baque","T112","TRANSFISMOR SA",0],
+["19918","Engelbert Baque","T011","TRUJILLO VELASCO LUISA NARCIZA",500],
+["19918","Engelbert Baque","V002","VALLA YAUTIBUG ANA",5900],
+["19918","Engelbert Baque","V132","VERGARA MOREIRA CARMEN MARIBEL",600],
+["19918","Engelbert Baque","A005","WALTER JAIME PERALTA TOMALA",500],
+["19918","Engelbert Baque","Y004","YUGLA CONDOR MILTON FABIAN",0],
+["107","Gregorio Gallardo Ospina","G006","AEROPUERTOS ECOLOGICOS GALAPAGOS ECOGAL",500],
+["107","Gregorio Gallardo Ospina","A029","ALCOCER GUAMBO WASHINGTON JESUS",1300],
+["107","Gregorio Gallardo Ospina","A028","ALVARADO CABRERA SAMUEL ERNESTO",500],
+["107","Gregorio Gallardo Ospina","A027","AUTOCHECO R.Q. S.A",500],
+["107","Gregorio Gallardo Ospina","B004","BRAVO MACIAS FRANKLIN SEGUNDO",2000],
+["107","Gregorio Gallardo Ospina","D034","CIRO FERNANDO DUEÑAS MENDOZA",1000],
+["107","Gregorio Gallardo Ospina","C021","COMERCIOS Y NEGOCIOS OLMEDOCONE S.A.S.",1500],
+["107","Gregorio Gallardo Ospina","C294","COMPAÑIA COLECTIVA COACTUR ASOCIADOS",4300],
+["107","Gregorio Gallardo Ospina","C278","COOP. TRANSP. CIUDADELAS UNIDAS GUAYAQUIL",1000],
+["107","Gregorio Gallardo Ospina","P008","COOP. TRANSP. PASAJEROS EN BUSES POSORJA",6000],
+["107","Gregorio Gallardo Ospina","H004","COOP. TRANSP. PASAJEROS HORIZONTE PENINSULAR",500],
+["107","Gregorio Gallardo Ospina","M007","COOP. TRANSP. PASAJEROS MAR AZUL",500],
+["107","Gregorio Gallardo Ospina","A017","COOP. TRANSP. INTERPROVINCIAL COSTA AZUL",3000],
+["107","Gregorio Gallardo Ospina","C262","COOP. TRANSP. SERV. ASOCIADOS NARANJAL",1200],
+["107","Gregorio Gallardo Ospina","C286","COOP. TRANSP. URBANO JUAN PABLO SEGUNDO",1000],
+["107","Gregorio Gallardo Ospina","D042","DISPRATTSA S.A",600],
+["107","Gregorio Gallardo Ospina","R164","ESTACION DE SERVICIOS RIRCAY SA",800],
+["107","Gregorio Gallardo Ospina","G009","GUAÑA QUILUMBA HECTOR FABIAN",500],
+["107","Gregorio Gallardo Ospina","G013","GUAÑA QUILUMBA WILSON RENE",500],
+["107","Gregorio Gallardo Ospina","G143","HENRY MANUEL GUALE ZAMBRANO",3600],
+["107","Gregorio Gallardo Ospina","C049","ING. CACERES ARRIETA VICTOR HUGO",500],
+["107","Gregorio Gallardo Ospina","I138","ITEGMOTORS S.A.",500],
+["107","Gregorio Gallardo Ospina","Q023","MANUEL EDUARDO QUILUMBA CABASCANGO",1500],
+["107","Gregorio Gallardo Ospina","T006","MONICA CECILIA TOAPANTA PUMACURO",600],
+["107","Gregorio Gallardo Ospina","B130","PEDRO ANDRES BAILON SALVATIERRA",700],
+["107","Gregorio Gallardo Ospina","P007","PEREZ MADRID FANNY ROCIO",500],
+["107","Gregorio Gallardo Ospina","R004","RIVADENEIRA PALACIOS RUBENZ PATRICIO",500],
+["107","Gregorio Gallardo Ospina","A207","ROLANDO OSCAR ALTAMIRANO OJEDA",500],
+["107","Gregorio Gallardo Ospina","S215","SALTOS MARCILLO FREDDY HUMBERTO",500],
+["107","Gregorio Gallardo Ospina","S224","SERLIPENA S.A",500],
+["107","Gregorio Gallardo Ospina","T007","SERV. TRANSP. LOGISTICA TRANSLOINTEG S.A.",600],
+["107","Gregorio Gallardo Ospina","U016","UNION COOP. TRANSP. PASAJEROS GUAYAS",1000],
+["107","Gregorio Gallardo Ospina","F069","VERONICA CATALINA FREIRE LASCANO",500],
+["107","Gregorio Gallardo Ospina","A007","WILSON GEOVANNY ALVARADO MASACHE",500],
+["107","Gregorio Gallardo Ospina","J014","YONSY MANRIQUE JIRON AJILA",500],
+["107","Gregorio Gallardo Ospina","Z002","ZAVALA REYES JHONNY FERNANDO",2000],
+["19911","Verónica Ramírez","M211","MONTEOOSCURO SA",35000]
+];
+
+/* ── Phases config ── */
+const PHASES = [
+  { id:"p1", label:"Prospección", sub:"Identificar y calificar", prob:20,
+    hint:"Primer contacto realizado — confirmar necesidad y capacidad de compra." },
+  { id:"p2", label:"Propuesta",   sub:"Cotización enviada",      prob:50,
+    hint:"Cotización enviada o en preparación — cliente evaluando la oferta." },
+  { id:"p3", label:"Negociación", sub:"Términos y condiciones",  prob:75,
+    hint:"Conversación activa sobre precio, plazo o condiciones de entrega." },
+  { id:"p4", label:"Cierre",      sub:"Confirmar y facturar",    prob:95,
+    hint:"Pedido confirmado o a punto de confirmarse — ejecutar facturación." }
+];
+
+/* ── Process raw data ── */
+const ADVISORS = {};
+const CLIENTS = {};
+RAW.forEach(([aid, aname, code, cname, budget]) => {
+  if (!ADVISORS[aid]) ADVISORS[aid] = aname;
+  CLIENTS[code] = { code, name: cname, budget: Number(budget), advisorId: aid, advisorName: aname };
+});
+
+/* ── State (localStorage) ── */
+const LS_KEY = "jr_pipeline_v2";
+let STATE = {};
+function loadState() {
+  try { STATE = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch(e) { STATE = {}; }
+}
+function saveState() {
+  localStorage.setItem(LS_KEY, JSON.stringify(STATE));
+}
+function getCard(code) {
+  if (!STATE[code]) {
+    STATE[code] = {
+      phase: "p1",
+      value: CLIENTS[code] ? CLIENTS[code].budget : 0,
+      product: "",
+      action: "",
+      contactDate: "",
+      contactType: "",
+      notes: "",
+      phaseUpdated: todayStr(),
+      history: []
+    };
+  }
+  return STATE[code];
+}
+
+function todayStr() { return new Date().toISOString().split("T")[0]; }
+function daysDiff(dateStr) {
+  if (!dateStr) return 0;
+  return Math.max(0, Math.round((new Date() - new Date(dateStr)) / 86400000));
+}
+function isDatePast(dateStr) {
+  if (!dateStr) return false;
+  return new Date(dateStr) < new Date(todayStr());
+}
+function fmtCurrency(n) {
+  return "$" + Number(n||0).toLocaleString("es-EC", { minimumFractionDigits:0, maximumFractionDigits:0 });
+}
+function fmtDate(d) {
+  if (!d) return "";
+  const [y,m,day] = d.split("-");
+  return `${day}/${m}/${y}`;
+}
+
+/* ── UI State ── */
+let currentAdvisor = "";
+let selectedCode = null;
+let addModalPhase = "p1";
+
+/* ── INIT ── */
+function init() {
+  loadState();
+  populateAdvisorSelector();
+  renderAll();
+}
+
+function populateAdvisorSelector() {
+  const sel = document.getElementById("advisorSel");
+  Object.entries(ADVISORS).forEach(([id, name]) => {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
+function onAdvisorChange() {
+  currentAdvisor = document.getElementById("advisorSel").value;
+  closeDetail();
+  renderAll();
+}
+
+function getVisibleClients() {
+  if (!currentAdvisor) return Object.values(CLIENTS);
+  return Object.values(CLIENTS).filter(c => c.advisorId === currentAdvisor);
+}
+
+/* ── RENDER ── */
+function renderAll() {
+  renderStats();
+  renderBoard();
+}
+
+function renderStats() {
+  const clients = getVisibleClients();
+  const totals = { p1:{n:0,v:0}, p2:{n:0,v:0}, p3:{n:0,v:0}, p4:{n:0,v:0} };
+  let totalBudget = 0;
+  clients.forEach(c => {
+    const card = getCard(c.code);
+    const ph = card.phase || "p1";
+    totals[ph].n++;
+    totals[ph].v += Number(card.value || c.budget || 0);
+    totalBudget += Number(c.budget || 0);
+  });
+  const totalPipeline = Object.values(totals).reduce((a,b) => a + b.v, 0);
+  const totalWeighted = Object.entries(totals).reduce((a,[ph,t]) => {
+    const prob = PHASES.find(p=>p.id===ph).prob / 100;
+    return a + t.v * prob;
+  }, 0);
+  const pct = totalBudget > 0 ? Math.round(totalPipeline / totalBudget * 100) : 0;
+
+  const html = PHASES.map(p => `
+    <div class="stat-pill ${p.id}" onclick="scrollToPhase('${p.id}')">
+      <div class="stat-dot"></div>
+      <div>
+        <div class="stat-label">${p.label}</div>
+        <span class="stat-count">${totals[p.id].n}</span>
+        <span class="stat-val"> · ${fmtCurrency(totals[p.id].v)}</span>
+      </div>
+    </div>`).join('<div class="stats-sep"></div>') +
+    `<div class="stats-sep"></div>
+     <div class="stat-total">
+       <div class="stat-total-item">
+         <div class="stl">Pipeline total</div>
+         <div class="stv ${pct < 80 ? 'warn':''}">${fmtCurrency(totalPipeline)} <small style="font-size:11px;font-weight:400">(${pct}% del presupuesto)</small></div>
+       </div>
+       <div class="stat-total-item">
+         <div class="stl">Proyección ponderada</div>
+         <div class="stv">${fmtCurrency(totalWeighted)}</div>
+       </div>
+     </div>`;
+  document.getElementById("statsBar").innerHTML = html;
+}
+
+function renderBoard() {
+  const clients = getVisibleClients();
+  const byPhase = { p1:[], p2:[], p3:[], p4:[] };
+  clients.forEach(c => {
+    const card = getCard(c.code);
+    (byPhase[card.phase] = byPhase[card.phase] || []).push(c);
+  });
+
+  // Also add extra cards (not in current advisor's client list) that were manually added
+  Object.keys(STATE).forEach(code => {
+    if (!CLIENTS[code]) {
+      // Extra manually-added client
+      if (!currentAdvisor || STATE[code].advisorId === currentAdvisor) {
+        const phase = STATE[code].phase || "p1";
+        byPhase[phase] = byPhase[phase] || [];
+        const existsAlready = byPhase[phase].find(c => c.code === code);
+        if (!existsAlready) {
+          byPhase[phase].push({ code, name: STATE[code].name || code, budget: 0, advisorId: STATE[code].advisorId || currentAdvisor, advisorName: STATE[code].advisorName || "" });
+        }
+      }
+    }
+  });
+
+  const html = PHASES.map(p => {
+    const cards = (byPhase[p.id] || []);
+    const totalV = cards.reduce((a,c) => a + Number((getCard(c.code).value) || c.budget || 0), 0);
+    return `
+    <div class="col ${p.id}" id="col-${p.id}">
+      <div class="col-head">
+        <div class="col-phase-bar"></div>
+        <div>
+          <div class="col-title">${p.label}</div>
+          <div class="col-sub">${p.sub}</div>
+        </div>
+        <div>
+          <div class="col-badge">${cards.length}</div>
+          <div style="font-size:10px;color:#94A3B8;text-align:right;margin-top:2px">${fmtCurrency(totalV)}</div>
+        </div>
+      </div>
+      <div class="col-body">
+        ${cards.length === 0 ? `<div class="empty-col"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12h6M12 9v6"/></svg>Sin clientes en esta fase</div>` : ""}
+        ${cards.map(c => renderCard(c, p.id)).join("")}
+      </div>
+      <div class="col-footer">
+        <button class="btn-add-col" onclick="openAddModal('${p.id}')">＋ Agregar cliente</button>
+      </div>
+    </div>`;
+  }).join("");
+  document.getElementById("boardWrap").innerHTML = html;
+}
+
+function renderCard(client, phase) {
+  const card = getCard(client.code);
+  const days = daysDiff(card.phaseUpdated);
+  const isAlert = days > 7 || (card.contactDate && isDatePast(card.contactDate));
+  const isSelected = selectedCode === client.code;
+  let daysClass = days <= 3 ? "ok" : days <= 7 ? "warn" : "danger";
+  const phaseIdx = PHASES.findIndex(p => p.id === phase);
+
+  const clientName = client.name || card.name || client.code;
+  const advisorInfo = !currentAdvisor ? `<div style="font-size:10px;color:#94A3B8;margin-bottom:3px">👤 ${client.advisorName}</div>` : "";
+
+  return `
+  <div class="card ${isAlert?'alert':''} ${isSelected?'selected':''}" onclick="openDetail('${client.code}')" id="card-${client.code}">
+    <div class="card-top">
+      <div class="card-name">${clientName}</div>
+      <div class="card-code">${client.code}</div>
+    </div>
+    ${advisorInfo}
+    ${card.product ? `<div class="card-product">${card.product}</div>` : ""}
+    <div class="card-meta">
+      <div>
+        <div class="card-budget">Pres: ${fmtCurrency(client.budget)}/mes</div>
+        <div class="card-value">${fmtCurrency(card.value || client.budget)}</div>
+      </div>
+      <div class="card-days ${daysClass}">${days}d en fase</div>
+    </div>
+    ${card.action ? `<div class="card-action">${card.action}</div>` : ""}
+    ${card.contactDate && isDatePast(card.contactDate) ? `<div class="card-date-alert">⚠ Contacto vencido: ${fmtDate(card.contactDate)}</div>` : ""}
+    ${card.contactDate && !isDatePast(card.contactDate) ? `<div style="font-size:10px;color:#64748B;margin-top:3px">📅 ${fmtDate(card.contactDate)}</div>` : ""}
+    <div class="card-nav">
+      ${phaseIdx > 0 ? `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); moveCard('${client.code}','back')">◀ Atrás</button>` : ""}
+      ${phaseIdx < 3 ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); moveCard('${client.code}','fwd')">Avanzar ▶</button>` : ""}
+      ${phaseIdx === 3 ? `<button class="btn btn-success btn-sm" onclick="event.stopPropagation(); markWon('${client.code}')">✓ Ganado</button>` : ""}
+    </div>
+  </div>`;
+}
+
+/* ── MOVE CARDS ── */
+function moveCard(code, dir) {
+  const card = getCard(code);
+  const idx = PHASES.findIndex(p => p.id === card.phase);
+  const newIdx = dir === "fwd" ? idx + 1 : idx - 1;
+  if (newIdx < 0 || newIdx >= PHASES.length) return;
+  const newPhase = PHASES[newIdx].id;
+  const oldPhase = card.phase;
+  card.history = card.history || [];
+  card.history.unshift({ date: todayStr(), from: oldPhase, to: newPhase, note: "Movido " + (dir==="fwd"?"adelante":"atrás") });
+  card.phase = newPhase;
+  card.phaseUpdated = todayStr();
+  if (newPhase === "p2") card.prob = 50;
+  if (newPhase === "p3") card.prob = 75;
+  if (newPhase === "p4") card.prob = 95;
+  saveState();
+  renderAll();
+  showToast("Cliente movido a " + PHASES[newIdx].label, "success");
+}
+
+function markWon(code) {
+  const card = getCard(code);
+  if (!confirm("¿Marcar como GANADO y archivar este cliente del pipeline activo?")) return;
+  card.history = card.history || [];
+  card.history.unshift({ date: todayStr(), from: card.phase, to: "won", note: "¡GANADO!" });
+  card.won = true;
+  card.wonDate = todayStr();
+  card.phase = "p4";
+  saveState();
+  renderAll();
+  showToast("¡Cliente marcado como ganado! 🎉", "success");
+}
+
+/* ── DETAIL PANEL ── */
+function openDetail(code) {
+  selectedCode = code;
+  const client = CLIENTS[code] || { code, name: STATE[code]?.name || code, budget: 0, advisorName: STATE[code]?.advisorName || "" };
+  const card = getCard(code);
+
+  document.getElementById("dpName").textContent = client.name;
+  document.getElementById("dpCode").textContent = `Código: ${code}`;
+  document.getElementById("dpAdvisor").textContent = `Asesor: ${client.advisorName}`;
+  document.getElementById("dpBudgetRef").textContent = `Presupuesto mensual: ${fmtCurrency(client.budget)}`;
+  document.getElementById("dpValue").value = card.value || client.budget || "";
+  document.getElementById("dpProb").value = card.prob || PHASES.find(p=>p.id===card.phase)?.prob || 20;
+  document.getElementById("dpProduct").value = card.product || "";
+  document.getElementById("dpAction").value = card.action || "";
+  document.getElementById("dpDate").value = card.contactDate || "";
+  document.getElementById("dpContactType").value = card.contactType || "";
+  document.getElementById("dpNotes").value = card.notes || "";
+
+  // Phase strip
+  const strip = document.getElementById("dpPhaseStrip");
+  strip.innerHTML = PHASES.map(p => `
+    <div class="dp-phase-step ${card.phase===p.id?'active-'+p.id:''}" onclick="changePhase('${p.id}')">
+      ${p.label}
+    </div>`).join("");
+
+  // History
+  const hist = card.history || [];
+  const histEl = document.getElementById("dpHistory");
+  if (hist.length === 0) {
+    histEl.innerHTML = `<div style="font-size:12px;color:#94A3B8;padding:6px">Sin movimientos registrados aún.</div>`;
+  } else {
+    histEl.innerHTML = hist.slice(0,10).map(h => {
+      const from = PHASES.find(p=>p.id===h.from)?.label || h.from;
+      const to = h.to === "won" ? "✓ GANADO" : (PHASES.find(p=>p.id===h.to)?.label || h.to);
+      return `<div class="history-item ph-${h.to}"><span class="hi-date">${fmtDate(h.date)}</span> — ${from} → ${to}${h.note?` <i style="color:#94A3B8">(${h.note})</i>`:""}</div>`;
+    }).join("");
+  }
+
+  document.getElementById("overlay").classList.add("show");
+  document.getElementById("detailPanel").classList.add("show");
+  renderAll();
+}
+
+function changePhase(newPhase) {
+  if (!selectedCode) return;
+  const card = getCard(selectedCode);
+  const oldPhase = card.phase;
+  if (oldPhase === newPhase) return;
+  card.history = card.history || [];
+  card.history.unshift({ date: todayStr(), from: oldPhase, to: newPhase, note: "Cambio manual desde panel" });
+  card.phase = newPhase;
+  card.phaseUpdated = todayStr();
+  const strip = document.getElementById("dpPhaseStrip");
+  strip.innerHTML = PHASES.map(p => `
+    <div class="dp-phase-step ${p.id===newPhase?'active-'+p.id:''}" onclick="changePhase('${p.id}')">
+      ${p.label}
+    </div>`).join("");
+  saveState();
+  renderAll();
+}
+
+function saveDetail() {
+  if (!selectedCode) return;
+  const card = getCard(selectedCode);
+  card.value = parseFloat(document.getElementById("dpValue").value) || 0;
+  card.prob = parseInt(document.getElementById("dpProb").value) || 20;
+  card.product = document.getElementById("dpProduct").value.trim();
+  card.action = document.getElementById("dpAction").value.trim();
+  card.contactDate = document.getElementById("dpDate").value;
+  card.contactType = document.getElementById("dpContactType").value;
+  card.notes = document.getElementById("dpNotes").value.trim();
+  saveState();
+  renderAll();
+  showToast("Cambios guardados correctamente", "success");
+  closeDetail();
+}
+
+function resetCard() {
+  if (!selectedCode) return;
+  if (!confirm("¿Restablecer este cliente al estado inicial (Fase 1, sin datos)?")) return;
+  delete STATE[selectedCode];
+  saveState();
+  renderAll();
+  closeDetail();
+  showToast("Cliente restablecido", "");
+}
+
+function closeDetail() {
+  document.getElementById("overlay").classList.remove("show");
+  document.getElementById("detailPanel").classList.remove("show");
+  selectedCode = null;
+  document.querySelectorAll(".card.selected").forEach(c => c.classList.remove("selected"));
+}
+
+/* ── ADD MODAL ── */
+function openAddModal(phase) {
+  addModalPhase = phase || "p1";
+  const ph = PHASES.find(p => p.id === addModalPhase);
+  document.getElementById("addModalHint").textContent = `Fase: ${ph.label} — ${ph.hint}`;
+  document.getElementById("addModalHint").className = `phase-hint ${addModalPhase}`;
+  document.getElementById("addName").value = "";
+  document.getElementById("addCode").value = "EX" + Date.now().toString().slice(-4);
+  document.getElementById("addValue").value = "";
+  document.getElementById("addProduct").value = "";
+  document.getElementById("addAction").value = "";
+  document.getElementById("addModal").classList.remove("hidden");
+}
+
+function closeAddModal() {
+  document.getElementById("addModal").classList.add("hidden");
+}
+
+function saveNewCard() {
+  const name = document.getElementById("addName").value.trim();
+  const code = document.getElementById("addCode").value.trim() || ("EX"+Date.now().toString().slice(-5));
+  const value = parseFloat(document.getElementById("addValue").value) || 0;
+  if (!name || value <= 0) { alert("Complete nombre y valor estimado."); return; }
+  STATE[code] = {
+    phase: addModalPhase,
+    value,
+    product: document.getElementById("addProduct").value.trim(),
+    action: document.getElementById("addAction").value.trim(),
+    contactDate: "",
+    contactType: "",
+    notes: "",
+    phaseUpdated: todayStr(),
+    history: [],
+    name,
+    advisorId: currentAdvisor,
+    advisorName: ADVISORS[currentAdvisor] || ""
+  };
+  saveState();
+  closeAddModal();
+  renderAll();
+  showToast("Cliente agregado al pipeline", "success");
+}
+
+/* ── EXPORT EXCEL ── */
+function exportExcel() {
+  if (typeof XLSX === "undefined") { alert("Librería Excel no disponible. Verifique conexión a internet."); return; }
+  const rows = [["Asesor","Cod. Asesor","Cód. Cliente","Nombre Cliente","Presupuesto Mensual","Fase","Valor Estimado","Probabilidad %","Valor Ponderado","Producto/Descripción","Próxima Acción","Tipo Contacto","Fecha Próx. Contacto","Días en Fase","Notas","Fecha Último Movimiento"]];
+
+  const clients = currentAdvisor ? Object.values(CLIENTS).filter(c => c.advisorId === currentAdvisor) : Object.values(CLIENTS);
+  clients.forEach(c => {
+    const card = getCard(c.code);
+    const days = daysDiff(card.phaseUpdated);
+    const phase = PHASES.find(p => p.id === card.phase);
+    const prob = card.prob || phase?.prob || 20;
+    const val = card.value || c.budget || 0;
+    rows.push([
+      c.advisorName, c.advisorId, c.code, c.name,
+      c.budget, phase?.label || card.phase,
+      val, prob, Math.round(val * prob / 100),
+      card.product || "", card.action || "",
+      card.contactType || "", card.contactDate || "",
+      days, card.notes || "", card.phaseUpdated || ""
+    ]);
+  });
+
+  // Resumen por asesor
+  const resumen = [["Asesor","Presupuesto Total","Prospección","Propuesta","Negociación","Cierre","Total Pipeline","Proyección Ponderada","Cobertura %"]];
+  Object.entries(ADVISORS).forEach(([aid, aname]) => {
+    const ac = Object.values(CLIENTS).filter(c => c.advisorId === aid);
+    let budgetT = 0, byPhase = {p1:0,p2:0,p3:0,p4:0}, weighted = 0;
+    ac.forEach(c => {
+      budgetT += c.budget;
+      const card = getCard(c.code);
+      const ph = card.phase || "p1";
+      const val = card.value || c.budget || 0;
+      byPhase[ph] = (byPhase[ph]||0) + val;
+      const prob = PHASES.find(p=>p.id===ph)?.prob || 20;
+      weighted += val * prob / 100;
+    });
+    const total = Object.values(byPhase).reduce((a,b)=>a+b,0);
+    resumen.push([aname, budgetT, byPhase.p1, byPhase.p2, byPhase.p3, byPhase.p4, total, Math.round(weighted), budgetT>0?Math.round(total/budgetT*100)+"%" : "—"]);
+  });
+
+  const wb = XLSX.utils.book_new();
+  const ws1 = XLSX.utils.aoa_to_sheet(rows);
+  const ws2 = XLSX.utils.aoa_to_sheet(resumen);
+  ws1["!cols"] = [14,10,10,30,12,14,12,10,12,25,30,18,16,10,30,16].map(w=>({wch:w}));
+  ws2["!cols"] = [25,14,12,12,12,12,14,16,12].map(w=>({wch:w}));
+  XLSX.utils.book_append_sheet(wb, ws1, "Pipeline Detalle");
+  XLSX.utils.book_append_sheet(wb, ws2, "Resumen por Asesor");
+  const fecha = new Date().toISOString().slice(0,10).replace(/-/g,"");
+  const advisor = currentAdvisor ? "_" + ADVISORS[currentAdvisor].split(" ")[0] : "_General";
+  XLSX.writeFile(wb, `Pipeline_JRRodas_${fecha}${advisor}.xlsx`);
+  showToast("Excel exportado correctamente", "success");
+}
+
+/* ── EXPORT JSON BACKUP ── */
+function exportJSON() {
+  const data = JSON.stringify(STATE, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Pipeline_JRRodas_backup_" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Respaldo JSON descargado", "success");
+}
+
+/* ── SCROLL TO PHASE ── */
+function scrollToPhase(phaseId) {
+  const el = document.getElementById("col-" + phaseId);
+  if (el) el.scrollIntoView({ behavior: "smooth", inline: "center" });
+}
+
+/* ── TOAST ── */
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show" + (type ? " " + type : "");
+  setTimeout(() => { t.className = "toast"; }, 3000);
+}
+
+/* ── KEYBOARD ── */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeDetail();
+});
+
+/* ── START ── */
+init();
+</script>
+</body>
+</html>
