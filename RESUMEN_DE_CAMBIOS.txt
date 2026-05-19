@@ -1,0 +1,195 @@
+# ✨ Resumen de Cambios - Pipeline JR Rodas 2026
+
+## ¿Qué se agregó?
+
+Se añadió **integración completa con Google Sheets** al archivo HTML existente, **sin cambiar nada de la funcionalidad original**. Todo lo anterior sigue funcionando igual:
+
+### ✅ Lo que YA EXISTÍA (sin cambios):
+- ✓ Tablero Kanban con 4 fases
+- ✓ Todos los 200 clientes reales de los 7 asesores
+- ✓ Filtro por asesor
+- ✓ Panel lateral para editar clientes
+- ✓ Mover clientes entre fases
+- ✓ Guardado automático local (localStorage) 
+- ✓ Botón **⬇ Exportar Excel** (funciona igual)
+- ✓ Botón **💾 Respaldo JSON** (funciona igual)
+- ✓ Resumen de métricas
+- ✓ Historial de movimientos
+- ✓ Alertas de días en fase y contactos vencidos
+
+### 🆕 Nuevo - Google Sheets:
+- 🔗 Nuevo botón **"🔗 Sheets"** en la barra superior (al lado del respaldo JSON)
+- 📋 Modal de configuración con instrucciones paso a paso
+- 🔄 Sincronización automática a Google Sheets (opcional)
+- 💾 Botón para copiar el código del Apps Script
+- ✓ Indicador de estado: "Conectado a Google Sheets"
+- 🔌 Opción para desconectar en cualquier momento
+
+---
+
+## 📊 Cómo funciona la integración
+
+### Sin Google Sheets (como antes):
+1. Abres Pipeline_Comercial_JR_Rodas_2026.html
+2. Todo se guarda en tu navegador (localStorage)
+3. Descargas Excel cuando quieras
+4. Descargas respaldo JSON cuando quieras
+
+### Con Google Sheets (nuevo):
+1. Abres Pipeline_Comercial_JR_Rodas_2026.html
+2. Haces clic en 🔗 Sheets
+3. Sigues los 5 pasos para conectar a Google Sheets
+4. **Automáticamente**, cada cambio se guarda en:
+   - ✓ Tu navegador (local - funciona sin internet)
+   - ✓ Google Sheets (nube - seguro y accesible desde cualquier dispositivo)
+5. Puedes descargar Excel en cualquier momento (sigue funcionando)
+6. Puedes descargar JSON en cualquier momento (sigue funcionando)
+
+---
+
+## 📁 Archivos entregados
+
+```
+📦 Archivos del Pipeline
+├── 📄 Pipeline_Comercial_JR_Rodas_2026.html
+│   └─ El archivo principal (ahora con Google Sheets integrado)
+│
+├── 📋 Apps_Script_Pipeline.gs
+│   └─ El código del Google Apps Script (copiar a script.google.com)
+│
+├── 📖 GUIA_Google_Sheets_Pipeline.md
+│   └─ Guía detallada paso a paso (este documento)
+│
+└── 📝 RESUMEN_DE_CAMBIOS.txt
+    └─ Este archivo
+```
+
+---
+
+## 🚀 Flujo de implementación rápida
+
+### Opción A: Solo usar Pipeline (sin Google Sheets)
+1. Descarga `Pipeline_Comercial_JR_Rodas_2026.html`
+2. Abre en tu navegador
+3. ¡Listo! Todo funciona como antes
+
+### Opción B: Agregar Google Sheets (recomendado para equipos)
+1. Descarga `Pipeline_Comercial_JR_Rodas_2026.html`
+2. Abre en navegador
+3. Sigue los 5 pasos de la guía (5 minutos máximo)
+4. ¡Listo! Ahora tienes respaldo en la nube
+
+---
+
+## 🔒 Seguridad y respaldos
+
+**Tu información está protegida en 3 lugares:**
+
+1. **Navegador local** (localStorage)
+   - Datos en tu computadora
+   - Funciona sin internet
+   - No se pierde si cierras el navegador
+
+2. **Descargas Excel** (botón ⬇)
+   - Archivo .xlsx que controlas tú
+   - Abre en Excel, Google Sheets, etc.
+
+3. **Google Sheets** (opcional)
+   - Datos en la nube
+   - Acceso desde cualquier dispositivo
+   - Automático si activas auto-sync
+
+**Puedes usar solo 1, 2, o los 3 - tú decides.**
+
+---
+
+## ✅ Lista de verificación antes de usar
+
+- [ ] Descargaste `Pipeline_Comercial_JR_Rodas_2026.html`
+- [ ] Lo abriste en navegador (Chrome, Firefox, Edge, Safari)
+- [ ] Ves los 200 clientes cargados
+- [ ] Puedes cambiar de asesor en el menú
+- [ ] El botón ⬇ Exportar Excel funciona
+- [ ] El botón 💾 Respaldo JSON funciona
+- [ ] El botón 🔗 Sheets existe en la barra superior
+
+Si todo esto está OK, el Pipeline está listo para usar.
+
+---
+
+## 🎯 Casos de uso
+
+**Caso 1: Vendedor individual**
+- Abre el Pipeline en tu navegador
+- Trabaja offline - todo se guarda localmente
+- Descarga Excel cuando necesites reportar
+
+**Caso 2: Gerente de ventas**
+- Conecta Google Sheets
+- Todos los asesores trabajan en el mismo navegador
+- Accedes a la Sheet para ver datos en tiempo real
+- Haces reportes basados en Sheets
+
+**Caso 3: Múltiples dispositivos**
+- Descarga Pipeline en laptop, tablet, teléfono
+- Conecta el mismo Google Sheets en todos
+- Los datos se sincronizan automáticamente
+
+---
+
+## 🔧 Cambios técnicos realizados
+
+(Para quienes quieran revisar el código)
+
+### En el HTML:
+1. Botón nuevo: `<button ... onclick="openGSheetsConfig()">🔗 Sheets</button>`
+2. Modal nuevo: `<div id="gsheetsModal">` con formulario de configuración
+3. Funciones JavaScript nuevas:
+   - `loadGSheetsConfig()` - Carga configuración del localStorage
+   - `openGSheetsConfig()` / `closeGSheetsConfig()` - Abre/cierra modal
+   - `saveGSheetsConfig()` - Guarda URL del Apps Script
+   - `sendToGSheets()` - Envía datos a Google Sheets
+   - `testGSheetsConnection()` - Prueba la conexión
+   - Modificaciones en `saveDetail()`, `moveCard()`, `saveNewCard()` para sincronizar
+
+### Puntos importantes:
+- Nada de la lógica original cambió
+- Todas las funciones antiguas siguen funcionando
+- Google Sheets es completamente opcional
+- Si no configuras Sheets, el HTML funciona exactamente como antes
+- La sincronización usa `fetch()` con `no-cors` para evitar problemas de CORS
+
+---
+
+## ❓ Preguntas rápidas
+
+**P: ¿Pierde funcionalidad si no uso Google Sheets?**
+R: No. El pipeline funciona exactamente igual sin Google Sheets.
+
+**P: ¿Puedo desconectar Google Sheets después?**
+R: Sí, en cualquier momento. Los datos locales se mantienen.
+
+**P: ¿Mi equipo necesita Google Apps Script?**
+R: Uno de ustedes lo crea y comparte la URL. Los demás lo usan.
+
+**P: ¿Los datos se pierden si cierro el navegador?**
+R: No. Se guardan en localStorage (navegador).
+
+**P: ¿Necesito internet para que funcione?**
+R: No para uso local. Sí para sincronizar con Google Sheets.
+
+---
+
+## 📞 Soporte rápido
+
+Si algo no funciona:
+1. Recarga la página (F5)
+2. Verifica que el ID de Apps Script sea correcto
+3. Abre la consola del navegador (F12) para ver errores
+4. Revisa el Apps Script en script.google.com → Ejecuciones
+
+---
+
+**Versión**: Pipeline JR Rodas 2026 v2.0 (con Google Sheets)
+**Fecha**: Mayo 2026
+**Autor**: Sistema de Gestión Comercial JR Rodas
